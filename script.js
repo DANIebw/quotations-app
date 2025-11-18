@@ -1,4 +1,5 @@
 let quoteCount = 0;
+let quotes = [];
 const form = document.getElementById("content"); //  selectionnaire ce qui m'interesse
 form.addEventListener("submit", function (event) {
   event.preventDefault(); //   je veux que ma fonction se declanche en au clic
@@ -7,6 +8,13 @@ form.addEventListener("submit", function (event) {
 
   const text = document.getElementById("text").value; //   recuperation de l'input
   const author = document.getElementById("author").value; //   recuperation des auteurs
+  quotes.push({
+    text: text,
+    author: author,
+  });
+
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+
   addQuote(text, author);
 });
 
@@ -38,3 +46,17 @@ function addQuote(quote, author) {
   const counter = document.getElementById("count");
   counter.innerText = quoteCount + " citations";
 }
+
+function loadQuotes() {
+  const savedQuotes = localStorage.getItem("quotes");
+  if (!savedQuotes) return; // rien à charger la première fois
+
+  quotes = JSON.parse(savedQuotes); // on récupère le tableau
+
+  quotes.forEach((q) => {
+    // on réutilise ta fonction addQuote pour les afficher
+    addQuote(q.text, q.author);
+  });
+}
+
+loadQuotes();
